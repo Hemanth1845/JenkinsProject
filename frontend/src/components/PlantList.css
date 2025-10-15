@@ -1,0 +1,18 @@
+.card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  max-width: 1100px;
+  margin: 2rem auto;
+}
+.plant-table { width:100%; border-collapse: collapse; }
+.plant-table th, .plant-table td { border:1px solid #eee; padding:8px; text-align:center; }
+.plant-table th { background:#2e7d32; color:#fff; }
+.btn { padding:6px 10px; border-radius:6px; border:none; cursor:pointer; margin:0 4px; }
+.btn.edit { background:#ff9800; color:white; text-decoration:none; display:inline-block; }
+.btn.delete { background:#e74c3c; color:white; }
+.form input, .form textarea { width:100%; padding:8px; margin:8px 0; border-radius:6px; border:1px solid #ddd; }
+.btn.add { background:#2e7d32; color:white; padding:10px 14px; }
+.btn.update { background:#1976d2; color:white; padding:10px 14px; }
+.loading, .error, .message, .no-data { text-align:center; margin:12px 0; font-weight:600; }
