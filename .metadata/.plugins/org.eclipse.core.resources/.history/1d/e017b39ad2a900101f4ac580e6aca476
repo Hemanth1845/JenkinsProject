@@ -59,7 +59,7 @@
 	</dependencies>
 
 	<build>
-	<finalName>planthome</finalName>
+	<finalName></finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

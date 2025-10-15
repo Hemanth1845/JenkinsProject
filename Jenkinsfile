@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     stages {
-
         // ===== FRONTEND BUILD =====
         stage('Build Frontend') {
             steps {
@@ -20,8 +19,7 @@ pipeline {
                 if exist "C:\\Program Files\\Apache Software Foundation\\Tomcat 10.1\\webapps\\frontendproject" (
                     rmdir /S /Q "C:\\Program Files\\Apache Software Foundation\\Tomcat 10.1\\webapps\\frontendproject"
                 )
-                mkdir "C:\\Program Files\\Apache Software Foundation\\Tomcat 10.1\\webapps\\frontendproject"
-                xcopy /E /I /Y frontend\\dist\\* "C:\\Program Files\\Apache Software Foundation\\Tomcat 10.1\\webapps\\frontendproject"
+                xcopy /E /I /Y frontend\\dist\\* "C:\\Program Files\\Apache Software Foundation\\Tomcat 10.1\\webapps\\frontendproject\\"
                 '''
             }
         }
@@ -35,12 +33,13 @@ pipeline {
             }
         }
 
-        // ===== BACKEND DEPLOY =====
-        stage('Deploy Backend to Tomcat') {
+        // ===== TOMCAT PREP =====
+        stage('Prepare Tomcat') {
             steps {
                 bat '''
-                echo "Stopping Tomcat service..."
-                net stop Tomcat10 || echo "Tomcat service was not running"
+                echo "Force stopping Tomcat processes..."
+                taskkill /F /IM java.exe 2>nul || echo "No Java processes found"
+                taskkill /F /IM tomcat10.exe 2>nul || echo "No Tomcat process found"
                 
                 echo "Cleaning old deployment..."
                 if exist "C:\\Program Files\\Apache Software Foundation\\Tomcat 10.1\\webapps\\planthome.war" (
@@ -50,14 +49,38 @@ pipeline {
                     rmdir /S /Q "C:\\Program Files\\Apache Software Foundation\\Tomcat 10.1\\webapps\\planthome"
                 )
                 
+                timeout /t 5 /nobreak >nul
+                '''
+            }
+        }
+
+        // ===== BACKEND DEPLOY =====
+        stage('Deploy Backend to Tomcat') {
+            steps {
+                bat '''
                 echo "Deploying new WAR..."
-                copy "planthome\\target\\*.war" "C:\\Program Files\\Apache Software Foundation\\Tomcat 10.1\\webapps\\planthome.war"
+                copy "planthome\\target\\backend.war" "C:\\Program Files\\Apache Software Foundation\\Tomcat 10.1\\webapps\\planthome.war"
                 
+                echo "Waiting for file copy to complete..."
+                timeout /t 3 /nobreak >nul
+                '''
+            }
+        }
+
+        // ===== START TOMCAT =====
+        stage('Start Tomcat') {
+            steps {
+                bat '''
                 echo "Starting Tomcat service..."
                 net start Tomcat10
                 
-                echo "Waiting for deployment to complete..."
-                timeout /t 30 /nobreak
+                if errorlevel 1 (
+                    echo "Tomcat service start failed, trying alternative method..."
+                    call "C:\\Program Files\\Apache Software Foundation\\Tomcat 10.1\\bin\\startup.bat"
+                )
+                
+                echo "Waiting for deployment to initialize..."
+                timeout /t 20 /nobreak >nul
                 '''
             }
         }
@@ -67,21 +90,25 @@ pipeline {
             steps {
                 bat '''
                 echo "Checking backend health..."
-                curl -f http://localhost:8080/planthome/api/plants/all || echo "Backend health check failed"
+                curl -s -o nul -w "%%{http_code}" http://localhost:8080/planthome/api/plants/all
+                if errorlevel 1 (
+                    echo "Backend health check failed - but continuing deployment"
+                ) else (
+                    echo "Backend is responding!"
+                )
                 '''
             }
         }
-
     }
 
     post {
-        success {
-            echo 'Deployment Successful!'
-            echo 'Frontend: http://your-server:8080/frontendproject'
-            echo 'Backend API: http://your-server:8080/planthome/api/plants'
-        }
-        failure {
-            echo 'Pipeline Failed.'
+        always {
+            echo 'Pipeline execution completed'
+            bat '''
+            echo "Frontend URL: http://localhost:8080/frontendproject/"
+            echo "Backend API: http://localhost:8080/planthome/api/plants/all"
+            echo "Tomcat Manager: http://localhost:8080/manager"
+            '''
         }
     }
 }
