@@ -6,13 +6,13 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.6</version>
+		<version>3.5.4</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.klef.dev</groupId>
-	<artifactId>planthome</artifactId>
+	<artifactId>bccimanagement</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>planthome</name>
+	<name>bccimanagement</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
@@ -59,7 +59,7 @@
 	</dependencies>
 
 	<build>
-	<finalName>planthome</finalName>
+	<finalName>backend</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

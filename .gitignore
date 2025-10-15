@@ -1,0 +1,18 @@
+# Ignore Eclipse workspace data
+BACKEND/.metadata/
+
+# Common Eclipse files
+.classpath
+.project
+.settings/
+
+# Build outputs
+bin/
+build/
+target/
+
+# OS junk
+*.log
+*.tmp
+"BACKEND/.metadata/" 
+/.metadata/
