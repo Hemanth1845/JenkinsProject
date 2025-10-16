@@ -6,7 +6,7 @@ pipeline {
         // ===== FRONTEND BUILD =====
         stage('Build Frontend') {
             steps {
-                dir('STUDENTAPI-REACT') {
+                dir('frontend') {
                     bat 'npm install'
                     bat 'npm run build'
                 }
