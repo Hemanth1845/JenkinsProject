@@ -10,9 +10,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.klef.dev</groupId>
-	<artifactId>bccimanagement</artifactId>
+	<artifactId>planthome</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>bccimanagement</name>
+	<name>plantname</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>

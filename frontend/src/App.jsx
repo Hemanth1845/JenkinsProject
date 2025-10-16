@@ -6,7 +6,8 @@ import "./App.css";
 
 function App() {
   return (
-    <Router>
+    // Add the basename prop here
+    <Router basename="/frontendproject">
       <div className="navbar">
         <h2>🌱 Nursery Home</h2>
         <div className="nav-links">
